@@ -1,14 +1,18 @@
-from groq import Groq
 from colorama import Fore, Back, Style
+from model import ModelFactory, RoleType, ProviderType, ModelType
 
 class Generation:
-    def __init__(self, prompt: str, model_name: str, groq_api_key: str, verbose: bool = False):
+    def __init__(self, prompt: str, provider: ProviderType = ProviderType.Groq, model_name: ModelType = ModelType.Llama3_3_70B_Versatile, api_key: str = None, verbose: bool = False):
         self.prompt = prompt
-        self.model = Groq(api_key=groq_api_key)
-        self.model_name = model_name
+        self.role = RoleType.System
+        self.model = ModelFactory(
+            api_key=api_key,
+            provider=provider, 
+            model_name=model_name, 
+            verbose=verbose
+        )
         self.generate_history = []
-        self.role = "system"
-        self.generate_history.append({"role":self.role, "content":prompt})
+        self.generate_history.append({"role": self.role.value, "content": prompt})
         self.verbose = verbose
     
     def __str__(self):
@@ -18,18 +22,19 @@ class Generation:
         print(Fore.GREEN + data + Style.RESET_ALL)
     
     def generate(self, prompt: str = None):
+        current_prompt = prompt if prompt is not None else self.prompt
+        
         if prompt is not None:
-            self.generate_history.append({"role": self.role, "content": prompt})
-        output = self.model.chat.completions.create(
-            messages=self.generate_history,
-            model=self.model_name
-        ).choices[0].message.content
+            self.generate_history.append({"role": self.role.value, "content": current_prompt})
+        
+        output = self.model.generate(current_prompt, self.role)
+        
         if self.verbose:
-            self.print_generation_log((output))
-        self.generate_history.append({"role": self.role, "content": output})
+            self.print_generation_log(output)
+            
+        self.generate_history.append({"role": "assistant", "content": output})
         return output
     
     def get_generation_history(self):
         return self.generate_history
-        
-        
+

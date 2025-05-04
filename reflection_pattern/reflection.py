@@ -1,15 +1,22 @@
-from groq import Groq
-from colorama import Fore,Back, Style\
-    
+from colorama import Fore, Back, Style
+from model import ModelFactory, RoleType, ProviderType, ModelType
+
+
 class Reflection:
-    def __init__(self, model_name: str, critique_prompt: str, groq_api_key:str, verbose:bool = False):
-        self.model = Groq(api_key=groq_api_key)
+    def __init__(self, provider: ProviderType, model_name: str, critique_prompt: str, api_key:str, verbose:bool = False):
+        self.system_role = RoleType.System
+        self.user_role = RoleType.User
+        self.assistant_role = RoleType.Assistant
         self.model_name = model_name
-        self.system_role = "system"
-        self.user_role = "user"
+        self.model = ModelFactory(
+            api_key=api_key,
+            provider= provider ,
+            model_name=model_name, 
+            verbose=verbose
+        )
         self.verbose = verbose
         self.reflection_history = [{
-            "role":self.system_role,
+            "role":self.system_role.value,
             "content": critique_prompt+ "\n\nIf you see that all the issues are fixed, please reply with 'Done' only."
         }]
     
@@ -17,16 +24,15 @@ class Reflection:
         print(Fore.RED + data + Style.RESET_ALL)
     
     def reflect(self, last_generated_info: str):
-        self.reflection_history.append({"role":self.user_role, "content": last_generated_info})
-        critique = self.model.chat.completions.create(
-            messages=self.reflection_history,
-            model=self.model_name
-        ).choices[0].message.content
+        self.reflection_history.append({"role": self.user_role.value, "content": last_generated_info})
+        critique = self.model.generate(
+            prompt=self.reflection_history,
+            role=self.user_role
+        )
         if self.verbose:
             self.print_reflection_logs(critique)
-        self.reflection_history.append({"role": "assistant", "content": critique})
+        self.reflection_history.append({"role": self.assistant_role.value, "content": critique})
         return critique
     
     def return_reflect_history(self):
         return self.reflection_history
-        
