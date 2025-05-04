@@ -1,6 +1,5 @@
 from dotenv import load_dotenv
-import os  # Add this import for os.getenv
-# Import the specific version we need from reflection_pattern_pattern.py
+import os
 from model.model_enums import ProviderType, ModelType
 from reflection_pattern.reflection_pattern import ReflectionPattern
 
@@ -14,12 +13,11 @@ def main():
         print("Please set it in your .env file or environment.")
         return
 
-    # Create a ReflectionPattern instance with the correct parameters
     rp = ReflectionPattern(
         generation_prompt="You are a pro python developer. Write a merge sort algorithm implementation in Python with proper documentation.",
         reflection_prompt="You are an experienced code reviewer. Review the code and suggest improvements for code efficiency, readability, best practices, and edge cases handling.",
         api_key=groq_api_key,
-        iterations=3,  # Adding this parameter which is required by reflection_pattern.py
+        iterations=3, 
         verbose=True,
         provider=ProviderType.Groq,
         model_name=ModelType.Llama3_3_70B_Versatile# Assuming you want to use the Groq provider
