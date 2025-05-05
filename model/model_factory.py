@@ -12,14 +12,12 @@ class ModelFactory:
     model: any = None
     
     def __post_init__(self)-> ModelBase:
-        print(self)
         if self.provider == model_enums.ProviderType.Groq:
             self.model = groq.GroqModel(
                 model_name=self.model_name,
                 api_key=self.api_key,
                 verbose=self.verbose
             )
-        print(self)
         return self.model
     
     def generate(self, prompt: list, role: model_enums.RoleType):
