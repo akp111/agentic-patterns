@@ -16,8 +16,8 @@ class EnvManager:
     a centralized way to access them across different tools.
     """
     
-    _instance = None  # Singleton instance
-    _env_loaded = False  # Flag to track if environment has been loaded
+    _instance = None  
+    _env_loaded = False
     
     def __new__(cls, *args, **kwargs):
         """Implement singleton pattern to ensure env variables are loaded only once."""

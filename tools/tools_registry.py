@@ -60,17 +60,6 @@ class ToolsRegistry:
         if tool_class:
             return tool_class(**kwargs)
         return None
-
-    @classmethod
-    def get_tools_parameters(cls):
-        """
-        Get the parameters of the registered tools
-        
-        Returns:
-            A list of dictionaries, each containing the parameters of a registered tool
-        """
-        registered_tools = cls.list_available_tools()
-        return registered_tools
     
    
 def register_tool(tool_class: Type[ToolsBase]) -> Type[ToolsBase]:
