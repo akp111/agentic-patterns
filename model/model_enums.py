@@ -4,6 +4,7 @@ class RoleType(Enum):
     System: str  = "system"
     User: str = "user"
     Assistant: str = "assistant"
+    Tool: str = "user"
 
 class ProviderType(Enum):
     Groq: str = "groq"

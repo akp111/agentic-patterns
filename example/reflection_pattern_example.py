@@ -1,6 +1,12 @@
-from dotenv import load_dotenv
+import sys
 import os
-from model.model_enums import ProviderType, ModelType
+from pathlib import Path
+
+# Add the parent directory to sys.path so Python can find the reflection_pattern module
+parent_dir = Path(__file__).parent.parent.absolute()
+sys.path.append(str(parent_dir))
+
+from dotenv import load_dotenv
 from reflection_pattern.reflection_pattern import ReflectionPattern
 
 # Load environment variables
@@ -16,13 +22,9 @@ def main():
     rp = ReflectionPattern(
         generation_prompt="You are a pro python developer. Write a merge sort algorithm implementation in Python with proper documentation.",
         reflection_prompt="You are an experienced code reviewer. Review the code and suggest improvements for code efficiency, readability, best practices, and edge cases handling.",
-        api_key=groq_api_key,
-        iterations=3, 
-        verbose=True,
-        provider=ProviderType.Groq,
-        model_name=ModelType.Llama3_3_70B_Versatile# Assuming you want to use the Groq provider
+        groq_api_key=groq_api_key,
+        verbose=True
     )
-    
     print("Running reflection pattern...")
     result = rp.run()
     print("\n===== FINAL OUTPUT =====")
