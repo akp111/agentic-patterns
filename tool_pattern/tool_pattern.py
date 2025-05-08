@@ -45,7 +45,7 @@ class ToolsPattern:
         """
         # System prompt with tool definitions
         system_prompt = {
-            "role": "system",
+            "role": RoleType.System.value,
             "content": """You are a helpful assistant that can use tools to answer user queries. 
 You have access to the following tools:
 
@@ -80,12 +80,12 @@ If you can answer the user's query without using tools, just respond normally.
         
         # Add conversation history
         for i in range(len(self.user_history)):
-            conversation.append({"role": "user", "content": self.user_history[i]["content"]})
+            conversation.append({"role": RoleType.User.value, "content": self.user_history[i]["content"]})
             if i < len(self.agent_history):
-                conversation.append({"role": "assistant", "content": self.agent_history[i]["content"]})
+                conversation.append({"role": RoleType.Assistant.value, "content": self.agent_history[i]["content"]})
         
         # Add current query
-        conversation.append({"role": "user", "content": user_query})
+        conversation.append({"role": RoleType.User.value, "content": user_query})
         
         return conversation
     
@@ -99,17 +99,14 @@ If you can answer the user's query without using tools, just respond normally.
         Returns:
             A tuple of (tool_name, parameters) or (None, None) if no tool call found
         """
-        # Look for JSON blocks in the response
         json_pattern = r'```json\n(.*?)\n```'
         json_matches = re.findall(json_pattern, response, re.DOTALL)
         
         if not json_matches:
-            # Try alternative pattern without syntax highlighting
             json_pattern = r'```\n(.*?)\n```'
             json_matches = re.findall(json_pattern, response, re.DOTALL)
             
         if not json_matches:
-            # As a fallback, try to find any JSON-like structure
             json_pattern = r'{[\s\S]*?"tool"[\s\S]*?}'
             json_matches = re.findall(json_pattern, response, re.DOTALL)
         
@@ -155,7 +152,6 @@ If you can answer the user's query without using tools, just respond normally.
         Returns:
             The final response from the assistant
         """
-        # Save the user query to history
         self.user_history.append({"content": user_query})
         
         iteration = 0
@@ -175,27 +171,14 @@ If you can answer the user's query without using tools, just respond normally.
             tool_name, parameters = self.parse_tool_call(response)
             
             if tool_name:
-                # Execute tool
                 tool_result = self.execute_tool(tool_name, parameters)
-                
-                # Add the tool call to the agent history
                 self.agent_history.append({"content": response})
-                
-                # Add the tool result as user message
                 self.user_history.append({"content": tool_result})
-                
-                # if self.verbose:
-                #     print(f"\nTool result:\n{tool_result}")
-                
-                # Continue to next iteration
                 iteration += 1
             else:
-                # No tool call, this is the final response
                 final_response = response
                 self.agent_history.append({"content": response})
                 break
-        
-        # If we reached max iterations without a final response, use the last response
         if not final_response and iteration == max_iterations:
             prompt = self.construct_prompt("Please provide your final answer based on the tool results.")
             final_response = self.model.generate(prompt, RoleType.Assistant)

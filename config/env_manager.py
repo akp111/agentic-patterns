@@ -20,7 +20,6 @@ class EnvManager:
     _env_loaded = False
     
     def __new__(cls, *args, **kwargs):
-        """Implement singleton pattern to ensure env variables are loaded only once."""
         if cls._instance is None:
             cls._instance = super(EnvManager, cls).__new__(cls)
         return cls._instance
