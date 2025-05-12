@@ -176,7 +176,7 @@ If you can answer the user's query without using tools, just respond normally.
 
             if "<response>" in response:
                 parsed_response = self.parse_tags(response, "response")
-                return parsed_response.strip()
+                final_response = parsed_response.strip() if parsed_response else ""
             
             
             tool_name, parameters = self.parse_tool_call(response)

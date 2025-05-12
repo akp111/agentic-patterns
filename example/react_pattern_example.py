@@ -17,7 +17,7 @@ def main():
 
     # Create ReAct pattern instance
     react_agent = ReactPattern(
-        user_prompt="What's the weather in New York and what are the top 3 news stories today? Also, find 2 images of New Work",
+        user_prompt="What's the weather in Bangalore and based on the temperature, suggest me a good place to visit?",
         verbose=True,
         api_key=groq_api_key
     )
