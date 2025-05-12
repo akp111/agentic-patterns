@@ -65,6 +65,27 @@ class EnvManager:
         load_dotenv()
     
     @staticmethod
+    def get_api_key(key_name: str, raise_error: bool = False, default: Any = None) -> Optional[str]:
+        """
+        Get an API key from environment variables.
+        
+        Args:
+            key_name: Name of the environment variable containing the API key
+            raise_error: Whether to raise an error if the key is not found
+            default: Default value to return if the key is not found
+            
+        Returns:
+            API key value or default if not found
+            
+        Raises:
+            ValueError: If raise_error is True and the key is not found
+        """
+        api_key = os.getenv(key_name, default)
+        if api_key is None and raise_error:
+            raise ValueError(f"API key '{key_name}' is required but not found in environment variables.")
+        return api_key
+    
+    @staticmethod
     def get_weather_api_key(raise_error: bool = True) -> Optional[str]:
         """
         Get the Weather API key.

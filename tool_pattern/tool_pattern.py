@@ -110,6 +110,7 @@ If you can answer the user's query without using tools, just respond normally.
             json_pattern = r'{[\s\S]*?"tool"[\s\S]*?}'
             json_matches = re.findall(json_pattern, response, re.DOTALL)
         
+        print(json_matches)
         for json_str in json_matches:
             try:
                 tool_call = json.loads(json_str)
