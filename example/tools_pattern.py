@@ -18,7 +18,7 @@ def main():
     output = ToolsPattern(
      groq_api_key=groq_api_key,
     ).run(
-        user_query="Top 5 hacker news summary",
+        user_query="Images of cat dancing",
         max_iterations=3,
     )
     print("\n===== FINAL OUTPUT =====")
