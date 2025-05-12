@@ -1,6 +1,5 @@
 from tools.tools_base import ToolsBase
 from dataclasses import dataclass
-import os
 from typing import Any, Optional, Dict
 from requests import request
 from .tools_registry import register_tool
@@ -24,8 +23,7 @@ class WeatherTool(ToolsBase):
         env_manager = EnvManager()
         
         # Get the API key from environment variables
-        if self.api_key is None:
-            self.api_key = env_manager.get_weather_api_key(raise_error=True)
+        self.api_key = env_manager.get_weather_api_key(raise_error=True)
             
         self.base_url = f"{self.base_url}?key={self.api_key}"
     

@@ -6,14 +6,13 @@ from pathlib import Path
 parent_dir = Path(__file__).parent.parent.absolute()
 sys.path.append(str(parent_dir))
 
-from dotenv import load_dotenv
+from config.env_manager import EnvManager
 from reflection_pattern.reflection_pattern import ReflectionPattern
 
-# Load environment variables
-load_dotenv()
 
 def main():
-    groq_api_key = os.getenv("GROQ_API_KEY")
+    env_manager = EnvManager()
+    groq_api_key = env_manager.get_groq_api_key(raise_error=True)
     if not groq_api_key:
         print("Error: GROQ_API_KEY environment variable not found.")
         print("Please set it in your .env file or environment.")
